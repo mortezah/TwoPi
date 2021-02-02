@@ -112,17 +112,18 @@ RANLIB  = ranlib
 
 # DEFINE HERE YOUR LAPACK LIBRARY
 
-LAPACK = -llapack
+# LAPACK = -llapack
 
 # SCALAP should define the SCALAPACK and  BLACS libraries.
 #SCALAP  = -lscalapack -lblacs
-SCALAP  = -L/usr/local/lib -lscalapack 
+SCALAP  = -L$(LA_ROOT)/lib -lscalapack -L$(LA_ROOT)/lib64 -llapack -lblas -lm
 
 # INCLUDE DIRECTORY FOR MPI
-INCPAR  = -I/usr/local/include/
+INCPAR  = -I$(OPENMPI_ROOT)/include/
 
 # LIBRARIES USED BY THE PARALLEL VERSION OF MUMPS: $(SCALAP) and MPI
-LIBPAR  = $(SCALAP) $(LAPACK) -L${MPI_LIBRARY_PATH} -lmpi
+# LIBPAR  = $(SCALAP) $(LAPACK) -L$(OPENMPI_ROOT)/lib -lmpi
+LIBPAR  = $(SCALAP)
 
 # The parallel version is not concerned by the next two lines.
 # They are related to the sequential library provided by MUMPS,
@@ -151,9 +152,9 @@ LIBOTHERS = -lpthread
 CDEFS = -DAdd_
 
 #COMPILER OPTIONS
-OPTF    = -O -I/usr/local/include -L/usr/local/lib/ ${OMPFCFLAG} -fPIC -DBLR_MT
-OPTC    = -O -fPIC ${OMPCCFLAG} -I.
-OPTL    = -O -I/usr/local/include -L/usr/local/lib/ ${OMPLINKFLAG}
+OPTF    = -O -fPIC -DBLR_MT -fopenmp # -fopenmp
+OPTL    = -O -fPIC -DBLR_MT -fopenmp # -fopenmp
+OPTC    = -O -fPIC -fopenmp # -fopenmp
 
 # CHOOSE BETWEEN USING THE SEQUENTIAL OR THE PARALLEL VERSION.
 
@@ -165,5 +166,4 @@ OPTL    = -O -I/usr/local/include -L/usr/local/lib/ ${OMPLINKFLAG}
 #Parallel:
 INCS = $(INCPAR)
 LIBS = $(LIBPAR)
-LIBSEQNEEDED = 
-
+LIBSEQNEEDED =
