@@ -1,16 +1,15 @@
 #!/bin/bash
 
 GIT=$(command -v git)
-SRCDIR=${TwoPiRoot}/src
-REPO=${SRCDIR}/swig-rel-4.0.2
 CMAKE=$(command -v cmake)
 MAKE=$(command -v make)
+SRCDIR=${TwoPiRoot}/src
 
+# load env
 SCRIPT=$(dirname "$0")/env_${TwoPiDevice}.sh
 source $SCRIPT
 
-cd ${REPO}
-${REPO}/autogen.sh
-${REPO}/configure --prefix=${TwoPiRoot}
-$MAKE
-$MAKE install
+REPO=${SRCDIR}/scotch_${SCOTCH_VERSION}
+
+cd ${REPO}/src
+make realclean

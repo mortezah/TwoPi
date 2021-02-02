@@ -1,12 +1,8 @@
+#  This file is genearated based on INTEL.SEQ 
 #
-#  This file is part of MUMPS 5.1.1, released
-#  on Mon Mar 20 14:34:33 UTC 2017
+#  This file is part of MUMPS 5.2.0, released
+#  on Thu Apr 18 09:55:07 UTC 2019
 #
-# These settings for a PC under Debian/linux with standard packages :
-# metis (parmetis), scotch (ptscotch), openmpi, gfortran
-
-# packages installation : 
-# apt-get install libmetis-dev libparmetis-dev libscotch-dev libptscotch-dev libatlas-base-dev openmpi-bin libopenmpi-dev lapack-dev
 
 ########################################################################
 #Begin orderings
@@ -78,44 +74,45 @@ LIBEXT  = .a
 OUTC    = -o 
 OUTF    = -o 
 RM = /bin/rm -f
-CC = mpiicc
-FC = mpiifort
-FL = mpiifort
+CC = $(MPICC)
+FC = $(MPIFC)
+FL = $(MPIFL)
 AR = ar vr 
-RANLIB = ranlib
-# Make this variable point to the path where the Intel MKL library is
-# installed. It is set to the default install directory for Intel MKL. 
-#MKLROOT=/opt/intel/mkl/lib/intel64
-MKLROOT=/home/software/intel/2018-01/compilers_and_libraries_2018.1.163/linux/mkl/lib/intel64
-LAPACK = 
+#RANLIB = ranlib
+RANLIB  = echo
 
-#SCALAP = -L/home/software/intel/2018-01/compilers_and_libraries_2018.1.163/linux/mkl/lib/intel64_lin/ -lmkl_rt
-#
-# MKL_SCALAPACK_LINK "-L"${MKLROOT}"/lib/intel64 -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_lp64 -liomp5 -lpthread"
-#
-SCALAP = $(MKL_SCALAPACK_LINK)
-INCPAR = -I$(MKLROOT)/include
+# Make this variable point to the path where the Intel MKL library is
+# installed. It is set to the default install directory for Intel MKL.
+
+#MKLROOT=/opt/intel/mkl/lib/intel64
+SCALAP = $(MUMPS_SCALAPACK_FLAG)
+LAPACK = $(MUMPS_BLASLAPACK_FLAG)
+
+INCPAR = $(MUMPS_INC_PAR)
 LIBPAR = $(SCALAP) 
 
 INCSEQ = -I$(topdir)/libseq
 LIBSEQ  = $(LAPACK) -L$(topdir)/libseq -lmpiseq
 
-#LIBBLAS = -lblas
-# This line controls somple executalbe build
-#LIBBLAS = -L/home/software/intel/2018-01/compilers_and_libraries_2018.1.163/linux/mkl/lib/intel64_lin/ -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_lp64 -liomp5
-LIBBLAS = $(MKL_SCALAPACK_LINK)
+#LIBBLAS = $(MUMPS_BLASLAPACK_FLAG)
+#LIBOTHERS = -lpthread
+LIBBLAS = $(MUMPS_SCALAPACK_FLAG)
 LIBOTHERS = -lpthread -lm -ldl
 
 #Preprocessor defs for calling Fortran from C (-DAdd_ or -DAdd__ or -DUPPER)
 CDEFS   = -DAdd_
 
 #Begin Optimized options
-# uncomment -fopenmp in lines below to benefit from OpenMP
-# -nofor_main (intel compiler option to use MUMPS from C main)
-OPTF    = -O -fPIC -DBLR_MT -nofor_main -qopenmp # -fopenmp
-OPTL    = -O -fPIC -DBLR_MT -nofor_main -qopenmp # -fopenmp
-OPTC    = -O -fPIC -qopenmp# -fopenmp
+OPTF    = -O -fPIC -nofor_main -DBLR_MT $(OMPFCFLAG)
+#OPTF    = -O -fPIC  -DBLR_MT $(OMPFCFLAG)
+OPTL    = -O -fPIC -nofor_main -DBLR_MT $(OMPLINKFLAG)
+#OPTL    = -O -fPIC -DBLR_MT $(OMPLINKFLAG)
+OPTC    = -O -fPIC  $(OMPFCFLAG)
 #End Optimized options
+ 
+#INCS = $(INCSEQ)
+#LIBS = $(LIBSEQ)
+#LIBSEQNEEDED = libseqneeded
 INCS = $(INCPAR)
 LIBS = $(LIBPAR)
-LIBSEQNEEDED =
+LIBSEQNEEDED = 
